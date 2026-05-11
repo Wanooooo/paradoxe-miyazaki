@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARADOXE PARIS × MIYAZAKI</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@400;700&display=swap');
+
+  @font-face {
+    font-family: 'Perandory Condensed';
+    src: local('Perandory Condensed');
+    /* Fallback stack if font not installed */
+  }
+
+  :root {
+    --gold: #c8a96e;
+    --gold-light: #e8c97e;
+    --gold-dim: #8a6f3e;
+    --ash: #a89880;
+    --ember: #d44c2a;
+    --bone: #d4c4a8;
+    --dark: #0a0806;
+    --panel: rgba(10,8,6,0.92);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    overflow: hidden;
+    cursor: default;
+  }
+
+  /* ─────────────────────────────────────────
+     GLOBAL FONT STACK
+  ───────────────────────────────────────── */
+  .perandory {
+    font-family: 'Perandory Condensed', 'Cinzel Decorative', 'Cinzel', 'Times New Roman', serif;
+    letter-spacing: 0.15em;
+  }
+
+  /* ─────────────────────────────────────────
+     PAGES
+  ───────────────────────────────────────── */
+  .page {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.8s ease;
+    overflow: hidden;
+  }
+  .page.active { opacity: 1; pointer-events: all; }
+
+  /* ─────────────────────────────────────────
+     PAGE 1 — MAIN
+  ───────────────────────────────────────── */
+  #page-main {
+    background: #000;
+  }
+
+  /* Grain overlay */
+  #page-main::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Subtle vignette */
+  #page-main::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; gap: clamp(24px, 5vh, 48px);
+    text-align: center;
+    padding: 20px;
+  }
+
+  /* Decorative top line */
+  .deco-line {
+    width: clamp(200px, 50vw, 500px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+
+  .collab-title {
+    font-size: clamp(2rem, 8vw, 7rem);
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 0.95;
+    text-shadow: 0 0 60px rgba(200,169,110,0.15);
+    animation: titleReveal 2s ease forwards;
+  }
+
+  .collab-title span {
+    color: var(--gold);
+    display: inline-block;
+    font-size: 0.7em;
+    vertical-align: middle;
+    padding: 0 0.2em;
+  }
+
+  @keyframes titleReveal {
+    from { opacity: 0; transform: translateY(20px); letter-spacing: 0.5em; }
+    to   { opacity: 1; transform: translateY(0);    letter-spacing: 0.15em; }
+  }
+
+  .subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.55rem, 1.5vw, 0.85rem);
+    color: var(--ash);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.8s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* Timer */
+  .timer-wrapper {
+    display: flex; gap: clamp(20px, 5vw, 60px);
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+
+  .timer-unit {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+
+  .timer-value {
+    font-size: clamp(2.5rem, 9vw, 6.5rem);
+    color: #fff;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(200,169,110,0.2);
+  }
+
+  .timer-label {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.45rem, 1.2vw, 0.65rem);
+    color: var(--gold-dim);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
+
+  .timer-sep {
+    font-size: clamp(2rem, 7vw, 5rem);
+    color: var(--gold-dim);
+    line-height: 1;
+    align-self: flex-start;
+    padding-top: 0.1em;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Bottom deco */
+  .bottom-deco {
+    display: flex; align-items: center; gap: 16px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.8s forwards;
+  }
+
+  .bottom-deco .deco-line { width: clamp(60px, 15vw, 160px); }
+
+  .rune-symbol {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(0.7rem, 1.8vw, 1rem);
+    color: var(--gold-dim);
+  }
+
+  /* ─────────────────────────────────────────
+     EASTER EGG — hidden crest bottom center
+  ───────────────────────────────────────── */
+  #easter-egg {
+    position: fixed;
+    bottom: 28px; left: 50%; transform: translateX(-50%);
+    z-index: 10;
+    cursor: pointer;
+    opacity: 0;
+    animation: fadeIn 1s ease 3s forwards;
+    transition: opacity 0.3s;
+  }
+  #easter-egg:hover { opacity: 0.6 !important; }
+  #easter-egg svg { width: 28px; height: 28px; fill: #1a1510; }
+
+  /* ─────────────────────────────────────────
+     PAGE 2 — SECRET / ELDEN RING
+  ───────────────────────────────────────── */
+  #page-secret {
+    background: var(--dark);
+  }
+
+  /* Dark atmospheric bg */
+  #page-secret::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 30%, rgba(60,30,10,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 100% 100% at 50% 100%, rgba(30,15,5,0.8) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  /* Particle dust */
+  .dust-particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: dustFloat linear infinite;
+    z-index: 1;
+  }
+
+  @keyframes dustFloat {
+    0%   { transform: translate(0, 0); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+  }
+
+  /* HUD frame corners */
+  .hud-frame {
+    position: absolute; inset: 20px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .hud-corner {
+    position: absolute;
+    width: 40px; height: 40px;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    opacity: 0.4;
+  }
+  .hud-corner.tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
+  .hud-corner.tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
+  .hud-corner.bl { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
+  .hud-corner.br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+
+  .secret-content {
+    position: relative; z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: center; gap: clamp(16px, 4vh, 36px);
+    text-align: center;
+    padding: 20px;
+  }
+
+  .secret-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    color: var(--gold-dim);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    animation: fadeIn 1s ease 0.3s both;
+  }
+
+  .secret-title {
+    font-size: clamp(1.8rem, 6vw, 4.5rem);
+    color: var(--gold-light);
+    text-transform: uppercase;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(200,169,110,0.4), 0 0 80px rgba(200,169,110,0.1);
+    animation: fadeIn 1s ease 0.5s both;
+  }
+
+  .secret-rule {
+    width: clamp(150px, 40vw, 340px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    animation: fadeIn 1s ease 0.7s both;
+  }
+
+  /* Menu items */
+  .secret-menu {
+    display: flex; flex-direction: column;
+    align-items: center; gap: clamp(10px, 2.5vh, 20px);
+    width: 100%;
+    animation: fadeIn 1s ease 0.9s both;
+  }
+
+  .menu-item {
+    position: relative;
+    font-size: clamp(1.1rem, 3.5vw, 2.2rem);
+    color: var(--bone);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    padding: clamp(8px, 2vh, 14px) clamp(30px, 8vw, 80px);
+    cursor: pointer;
+    transition: color 0.3s, text-shadow 0.3s;
+    border: 1px solid rgba(200,169,110,0.15);
+    background: rgba(200,169,110,0.03);
+    min-width: clamp(200px, 50vw, 420px);
+    text-align: center;
+  }
+
+  .menu-item::before, .menu-item::after {
+    content: '';
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.3s;
+  }
+  .menu-item::before { right: 100%; margin-right: 8px; }
+  .menu-item::after  { left: 100%;  margin-left: 8px; }
+
+  .menu-item:hover {
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(200,169,110,0.6);
+    border-color: rgba(200,169,110,0.4);
+    background: rgba(200,169,110,0.06);
+  }
+  .menu-item:hover::before, .menu-item:hover::after { width: 30px; }
+
+  .menu-item .item-rune {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.6em;
+    color: var(--gold-dim);
+    display: block;
+    letter-spacing: 0.2em;
+    margin-top: 4px;
+  }
+
+  /* Soul counter bottom */
+  .soul-counter {
+    position: fixed;
+    bottom: 24px; left: 24px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+    color: var(--gold-dim);
+    letter-spacing: 0.2em;
+    z-index: 10;
+  }
+  .soul-orb {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #7fa8d4, #3a6888);
+    box-shadow: 0 0 8px #5a88b0;
+  }
+
+  /* Back btn */
+  .back-btn {
+    position: fixed;
+    top: 24px; left: 24px;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.5rem, 1.2vw, 0.65rem);
+    color: var(--gold-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    z-index: 20;
+    transition: color 0.3s;
+    display: none;
+  }
+  .back-btn:hover { color: var(--gold); }
+  .back-btn.visible { display: block; }
+
+  /* ─────────────────────────────────────────
+     PAGE 3 — QUESTIONNAIRE
+  ───────────────────────────────────────── */
+  #page-quiz {
+    background: var(--dark);
+    overflow-y: auto;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  #page-quiz::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(50,25,8,0.5) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .quiz-wrap {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(60px, 10vh, 100px) clamp(20px, 5vw, 60px) 80px;
+    display: flex; flex-direction: column; gap: clamp(20px, 4vh, 36px);
+  }
+
+  .quiz-header {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    text-align: center;
+  }
+
+  .quiz-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.5rem, 1.2vw, 0.65rem);
+    color: var(--gold-dim);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+  }
+
+  .quiz-title {
+    font-size: clamp(1.4rem, 4vw, 2.6rem);
+    color: var(--gold-light);
+    text-transform: uppercase;
+    text-shadow: 0 0 30px rgba(200,169,110,0.3);
+  }
+
+  .quiz-rule {
+    width: 200px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  /* Progress */
+  .quiz-progress-bar {
+    height: 2px;
+    background: rgba(200,169,110,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    transition: width 0.5s ease;
+  }
+  .quiz-progress-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.3em;
+    text-align: right;
+  }
+
+  /* Question card */
+  .question-card {
+    background: rgba(200,169,110,0.04);
+    border: 1px solid rgba(200,169,110,0.12);
+    padding: clamp(20px, 4vw, 36px);
+    display: flex; flex-direction: column; gap: 20px;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .question-number {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+  }
+
+  .question-text {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+    color: var(--bone);
+    line-height: 1.6;
+  }
+
+  .question-tag {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid;
+    margin-bottom: 4px;
+  }
+  .question-tag.fromsoftware { color: var(--ember); border-color: var(--ember); }
+  .question-tag.paradoxe { color: #7ab8d4; border-color: #4a88a4; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+
+  .choice-btn {
+    background: rgba(200,169,110,0.03);
+    border: 1px solid rgba(200,169,110,0.1);
+    color: var(--ash);
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+    letter-spacing: 0.15em;
+    padding: clamp(10px, 2vw, 16px) clamp(14px, 3vw, 24px);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .choice-btn::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: rgba(200,169,110,0.06);
+    transition: width 0.3s;
+  }
+  .choice-btn:hover { color: var(--gold-light); border-color: rgba(200,169,110,0.35); }
+  .choice-btn:hover::before { width: 100%; }
+  .choice-btn.correct { border-color: #4a8a5a; color: #7ab87a; background: rgba(74,138,90,0.08); }
+  .choice-btn.wrong   { border-color: var(--ember); color: #d47a5a; background: rgba(212,76,42,0.08); }
+  .choice-btn.reveal  { border-color: #4a8a5a; color: #7ab87a; background: rgba(74,138,90,0.06); opacity: 0.6; }
+  .choice-btn:disabled { cursor: default; }
+
+  .feedback-text {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+    color: var(--ash);
+    font-style: italic;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+    border-left: 2px solid var(--gold-dim);
+    padding-left: 14px;
+    display: none;
+  }
+  .feedback-text.visible { display: block; }
+
+  .next-btn {
+    align-self: flex-end;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    background: transparent;
+    border: 1px solid rgba(200,169,110,0.2);
+    padding: 10px 28px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: none;
+  }
+  .next-btn.visible { display: block; }
+  .next-btn:hover { color: var(--gold); border-color: rgba(200,169,110,0.5); }
+
+  /* Score final */
+  .final-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    text-align: center;
+    padding: 20px;
+  }
+  .final-screen.visible { display: flex; }
+
+  .final-crest {
+    width: 80px; height: 80px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2rem;
+    color: var(--gold);
+  }
+
+  .final-title {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    color: var(--gold-light);
+    text-transform: uppercase;
+    text-shadow: 0 0 40px rgba(200,169,110,0.4);
+  }
+
+  .final-score {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    color: var(--ash);
+    letter-spacing: 0.3em;
+  }
+
+  .final-epitaph {
+    max-width: 520px;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+    color: var(--bone);
+    line-height: 1.8;
+    font-style: italic;
+    border: 1px solid rgba(200,169,110,0.1);
+    padding: 24px 32px;
+    background: rgba(200,169,110,0.03);
+  }
+
+  .final-restart {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    background: transparent;
+    border: 1px solid rgba(200,169,110,0.2);
+    padding: 12px 36px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .final-restart:hover { color: var(--gold); border-color: rgba(200,169,110,0.5); }
+
+  /* ── CHEST REWARD ── */
+  .chest-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    margin-top: 8px;
+  }
+  .chest-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    animation: chestPulse 2s ease-in-out infinite;
+  }
+  @keyframes chestPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+  .chest-btn {
+    background: none; border: none; cursor: pointer;
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px;
+    transition: transform 0.3s;
+  }
+  .chest-btn:hover { transform: scale(1.08); }
+  .chest-btn svg { filter: drop-shadow(0 0 12px rgba(200,169,110,0.25)); transition: filter 0.3s; }
+  .chest-btn:hover svg { filter: drop-shadow(0 0 22px rgba(200,169,110,0.6)); }
+  .chest-btn.opened svg { filter: drop-shadow(0 0 28px rgba(200,169,110,0.9)); }
+
+  .chest-reveal {
+    display: none;
+    flex-direction: column; align-items: center; gap: 10px;
+    animation: fadeIn 0.6s ease both;
+  }
+  .chest-reveal.visible { display: flex; }
+
+  .chest-address {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.75rem, 2vw, 0.95rem);
+    color: var(--gold-light);
+    letter-spacing: 0.2em;
+    text-align: center;
+    line-height: 1.7;
+    border: 1px solid rgba(200,169,110,0.25);
+    background: rgba(200,169,110,0.05);
+    padding: 16px 28px;
+    text-shadow: 0 0 20px rgba(200,169,110,0.4);
+  }
+  .chest-address small {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.4em;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ─────────────────────────────────────────
+     TRANSITION OVERLAY
+  ───────────────────────────────────────── */
+  #transition-overlay {
+    position: fixed; inset: 0;
+    background: #000;
+    z-index: 100;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  #transition-overlay.active { opacity: 1; pointer-events: all; }
+
+  /* ─────────────────────────────────────────
+     RESPONSIVE
+  ───────────────────────────────────────── */
+  @media (max-width: 480px) {
+    .timer-wrapper { gap: 12px; }
+    .timer-sep { display: none; }
+    .menu-item::before, .menu-item::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — MAIN
+══════════════════════════════════════ -->
+<div id="page-main" class="page active">
+  <div class="main-content">
+    <div class="deco-line"></div>
+    <h1 class="collab-title perandory">
+      PARADOXE PARIS <span>×</span> MIYAZAKI
+    </h1>
+    <p class="subtitle">Collection — Automne · Hiver 2026</p>
+    <div class="deco-line"></div>
+    <div class="timer-wrapper" id="timer">
+      <div class="timer-unit">
+        <div class="timer-value perandory" id="t-days">00</div>
+        <div class="timer-label">Jours</div>
+      </div>
+      <div class="timer-sep perandory">:</div>
+      <div class="timer-unit">
+        <div class="timer-value perandory" id="t-hours">00</div>
+        <div class="timer-label">Heures</div>
+      </div>
+      <div class="timer-sep perandory">:</div>
+      <div class="timer-unit">
+        <div class="timer-value perandory" id="t-min">00</div>
+        <div class="timer-label">Minutes</div>
+      </div>
+      <div class="timer-sep perandory">:</div>
+      <div class="timer-unit">
+        <div class="timer-value perandory" id="t-sec">00</div>
+        <div class="timer-label">Secondes</div>
+      </div>
+    </div>
+    <div class="bottom-deco">
+      <div class="deco-line"></div>
+      <div class="rune-symbol">⸸</div>
+      <div class="deco-line"></div>
+    </div>
+  </div>
+
+  <!-- EASTER EGG — small bonfire sigil at bottom center -->
+  <div id="easter-egg" title="">
+    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="fill:none;stroke:#2a2018;stroke-width:1;">
+      <!-- Bonfire sigil shape -->
+      <circle cx="20" cy="20" r="18" stroke="#1e180e" stroke-width="0.5"/>
+      <path d="M20 8 L22 16 L28 14 L23 20 L26 28 L20 24 L14 28 L17 20 L12 14 L18 16 Z" stroke="#241c0e" stroke-width="0.8" fill="none"/>
+      <circle cx="20" cy="20" r="3" stroke="#1e180e" stroke-width="0.5"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — SECRET
+══════════════════════════════════════ -->
+<div id="page-secret" class="page">
+  <div class="hud-frame">
+    <div class="hud-corner tl"></div>
+    <div class="hud-corner tr"></div>
+    <div class="hud-corner bl"></div>
+    <div class="hud-corner br"></div>
+  </div>
+  <div id="dust-container"></div>
+
+  <div class="secret-content">
+    <p class="secret-eyebrow perandory">— Vous avez trouvé le sanctuaire —</p>
+    <h2 class="secret-title perandory">L'Anneau Brisé</h2>
+    <div class="secret-rule"></div>
+    <nav class="secret-menu">
+      <div class="menu-item perandory" id="btn-jouer">
+        JOUER
+        <span class="item-rune">Épreuve du Teinturier</span>
+      </div>
+      <div class="menu-item perandory" id="btn-paradoxe">
+        PARADOXE PARIS
+        <span class="item-rune">Accéder au Domaine</span>
+      </div>
+    </nav>
+    <div class="secret-rule" style="margin-top:8px;"></div>
+    <p style="font-family:'Cinzel',serif;font-size:0.55rem;color:var(--gold-dim);letter-spacing:0.4em;text-transform:uppercase;opacity:0.6;">
+      Lumières d'Erdtree — MMXXVI
+    </p>
+  </div>
+
+  <div class="soul-counter">
+    <div class="soul-orb"></div>
+    <span style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;">74 820 RUNES</span>
+  </div>
+
+  <audio id="ambient-audio" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — QUIZ
+══════════════════════════════════════ -->
+<div id="page-quiz" class="page">
+  <div class="quiz-wrap">
+    <div class="quiz-header">
+      <p class="quiz-eyebrow perandory">— Épreuve du Teinturier —</p>
+      <h2 class="quiz-title perandory">Connais-tu l'Anneau ?</h2>
+      <div class="quiz-rule"></div>
+    </div>
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="quiz-progress-text perandory" id="progress-text">Question 1 / 7</div>
+
+    <div id="question-area"></div>
+
+    <div class="final-screen" id="final-screen">
+      <div class="final-crest">⸸</div>
+      <h2 class="final-title perandory" id="final-title">—</h2>
+      <p class="final-score perandory" id="final-score">—</p>
+      <div class="quiz-rule"></div>
+      <blockquote class="final-epitaph perandory" id="final-epitaph"></blockquote>
+      <button class="final-restart perandory" id="btn-restart">↺ Recommencer l'Épreuve</button>
+
+      <!-- CHEST REWARD -->
+      <div class="chest-wrap">
+        <p class="chest-label perandory">— Coffre de Récompense —</p>
+        <button class="chest-btn" id="chest-btn" title="Ouvrir le coffre">
+          <svg id="chest-svg" width="90" height="72" viewBox="0 0 90 72" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="36" width="78" height="30" rx="2" fill="#1a1208" stroke="#c8a96e" stroke-width="1.2"/>
+            <rect x="6" y="10" width="78" height="28" rx="2" fill="#1a1208" stroke="#c8a96e" stroke-width="1.2"/>
+            <path d="M6 24 Q45 6 84 24" fill="#0f0c06" stroke="#c8a96e" stroke-width="1"/>
+            <rect x="12" y="33" width="8" height="6" rx="1" fill="#0a0806" stroke="#8a6f3e" stroke-width="0.8"/>
+            <rect x="70" y="33" width="8" height="6" rx="1" fill="#0a0806" stroke="#8a6f3e" stroke-width="0.8"/>
+            <rect x="38" y="32" width="14" height="10" rx="2" fill="#0a0806" stroke="#c8a96e" stroke-width="1"/>
+            <circle cx="45" cy="37" r="3" fill="none" stroke="#c8a96e" stroke-width="1"/>
+            <line x1="6" y1="51" x2="84" y2="51" stroke="#8a6f3e" stroke-width="0.5" opacity="0.5"/>
+            <circle cx="14" cy="44" r="2" fill="#8a6f3e"/>
+            <circle cx="76" cy="44" r="2" fill="#8a6f3e"/>
+            <circle cx="14" cy="58" r="2" fill="#8a6f3e"/>
+            <circle cx="76" cy="58" r="2" fill="#8a6f3e"/>
+          </svg>
+        </button>
+        <div class="chest-reveal perandory" id="chest-reveal">
+          <div class="chest-address perandory">
+            <small>📍 Lieu du Drop</small>
+            Quartier du Marais<br>Rue Frambourgeois — Paris
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Back button (shared) -->
+<div class="back-btn perandory" id="back-btn">← Retour</div>
+
+<!-- Transition overlay -->
+<div id="transition-overlay"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════
+const TARGET = new Date('2026-05-13T00:00:00').getTime();
+
+function updateTimer() {
+  const now = Date.now();
+  const diff = TARGET - now;
+  if (diff <= 0) {
+    document.getElementById('t-days').textContent = '00';
+    document.getElementById('t-hours').textContent = '00';
+    document.getElementById('t-min').textContent = '00';
+    document.getElementById('t-sec').textContent = '00';
+    return;
+  }
+  const days  = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins  = Math.floor((diff % 3600000) / 60000);
+  const secs  = Math.floor((diff % 60000) / 1000);
+  document.getElementById('t-days').textContent  = String(days).padStart(2,'0');
+  document.getElementById('t-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('t-min').textContent   = String(mins).padStart(2,'0');
+  document.getElementById('t-sec').textContent   = String(secs).padStart(2,'0');
+}
+updateTimer();
+setInterval(updateTimer, 1000);
+
+// ═══════════════════════════════════════════
+// PAGE NAVIGATION
+// ═══════════════════════════════════════════
+const overlay = document.getElementById('transition-overlay');
+
+function goTo(targetId, withBack = false) {
+  overlay.classList.add('active');
+  setTimeout(() => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(targetId).classList.add('active');
+    const backBtn = document.getElementById('back-btn');
+    if (withBack) {
+      backBtn.classList.add('visible');
+      backBtn.dataset.from = targetId === 'page-quiz' ? 'page-secret' : 'page-main';
+    } else {
+      backBtn.classList.remove('visible');
+    }
+    overlay.classList.remove('active');
+  }, 500);
+}
+
+// Easter egg
+document.getElementById('easter-egg').addEventListener('click', () => {
+  goTo('page-secret', true);
+  document.getElementById('back-btn').dataset.from = 'page-main';
+  // Try to play ambient audio
+  const audio = document.getElementById('ambient-audio');
+  audio.volume = 0.25;
+  audio.play().catch(() => {});
+  // Spawn dust particles
+  spawnDust();
+});
+
+document.getElementById('btn-jouer').addEventListener('click', () => {
+  goTo('page-quiz', true);
+  document.getElementById('back-btn').dataset.from = 'page-secret';
+  initQuiz();
+});
+
+document.getElementById('btn-paradoxe').addEventListener('click', () => {
+  window.open('https://www.paradoxeparis.com', '_blank');
+});
+
+document.getElementById('back-btn').addEventListener('click', () => {
+  const from = document.getElementById('back-btn').dataset.from;
+  goTo(from, from !== 'page-main');
+  if (from === 'page-secret') {
+    document.getElementById('back-btn').dataset.from = 'page-main';
+  }
+  if (from === 'page-main') {
+    const audio = document.getElementById('ambient-audio');
+    audio.pause(); audio.currentTime = 0;
+  }
+});
+
+// ═══════════════════════════════════════════
+// DUST PARTICLES
+// ═══════════════════════════════════════════
+function spawnDust() {
+  const container = document.getElementById('dust-container');
+  container.innerHTML = '';
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'dust-particle';
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const dx = (Math.random() - 0.5) * 200 + 'px';
+    const dy = -(Math.random() * 150 + 50) + 'px';
+    const dur = (Math.random() * 4 + 3) + 's';
+    const delay = (Math.random() * 3) + 's';
+    p.style.cssText = `left:${x}%;top:${y}%;--dx:${dx};--dy:${dy};animation-duration:${dur};animation-delay:${delay};`;
+    container.appendChild(p);
+  }
+}
+
+// ═══════════════════════════════════════════
+// QUIZ DATA
+// ═══════════════════════════════════════════
+const questions = [
+  {
+    tag: 'fromsoftware', tagLabel: 'FromSoftware',
+    text: "Quel est le nom du dieu déchu dont la mort provoqua le Fracas et brisa l'Anneau Elden ?",
+    choices: ["Marika l'Éternelle", "Radagon d'Astre d'Or", "Godwyn le Doré", "Rennala Reine de la Lune Pleine"],
+    correct: 2,
+    feedback: "Godwyn le Doré, premier des demi-dieux à mourir. Sa mort donna naissance à la Malédiction des Mort-Vivants."
+  },
+  {
+    tag: 'paradoxe', tagLabel: 'Paradoxe Paris',
+    text: "Paradoxe Paris est une marque de streetwear fondée dans quelle ville ?",
+    choices: ["Lyon", "Marseille", "Paris", "Bordeaux"],
+    correct: 2,
+    feedback: "Fondée à Paris, Paradoxe incarne l'esthétique streetwear parisienne mêlant héritage culturel et modernité."
+  },
+  {
+    tag: 'fromsoftware', tagLabel: 'FromSoftware',
+    text: "Dans Dark Souls, quel est le nom du Roi Sombre qui ordonna l'Âge du Feu et scella les Seigneurs ?",
+    choices: ["Gwyn, Seigneur de la Cendre", "Aldrich, Saint de la Profondeur", "Pontiff Sulyvahn", "Yhorm le Géant"],
+    correct: 0,
+    feedback: "Gwyn sacrifia son âme pour prolonger l'Âge du Feu. Ses cendres reposent au Sanctuaire de Connexion."
+  },
+  {
+    tag: 'paradoxe', tagLabel: 'Paradoxe Paris',
+    text: "Quel type de pièces Paradoxe Paris est-il particulièrement reconnu pour avoir popularisé ?",
+    choices: ["Les robes de soirée", "Les hoodies et pièces oversize", "Les tailleurs classiques", "Les maillots de bain"],
+    correct: 1,
+    feedback: "Paradoxe Paris s'est imposé dans le streetwear avec des pièces oversize, hoodies et sweats à fort caractère."
+  },
+  {
+    tag: 'fromsoftware', tagLabel: 'FromSoftware',
+    text: "Dans Sekiro: Shadows Die Twice, quelle est la phrase emblématique qui illustre la mort comme mécanique de jeu ?",
+    choices: ["YOU DIED", "DEATH IS NOT THE END", "SHINOBI EXECUTION", "SEKIRO DIES TWICE"],
+    correct: 0,
+    feedback: "YOU DIED — l'écran de mort iconique de FromSoftware, devenu symbole de défi dans l'histoire du jeu vidéo."
+  },
+  {
+    tag: 'fromsoftware', tagLabel: 'FromSoftware',
+    text: "Bloodborne se déroule dans quelle ville maudite par la Bête et la Malédiction du Sang ?",
+    choices: ["Yharnham", "Yharnam", "Yarham", "Yharnam la Sanglante"],
+    correct: 1,
+    feedback: "Yharnam, cité gothique rongée par la fièvre du Sang, est le théâtre cauchemardesque de Bloodborne."
+  },
+  {
+    tag: 'paradoxe', tagLabel: 'Paradoxe Paris',
+    text: "Dans la philosophie de Paradoxe Paris, quel concept est au cœur de l'identité de la marque ?",
+    choices: ["Le luxe accessible", "La tension entre contraires — élégance et rue", "Le sportswear technique", "Le minimalisme scandinave"],
+    correct: 1,
+    feedback: "Le paradoxe est au cœur de la marque : marier le raffinement parisien à la culture de la rue. C'est cette dualité qui définit son ADN."
+  }
+];
+
+// ═══════════════════════════════════════════
+// QUIZ LOGIC
+// ═══════════════════════════════════════════
+let currentQ = 0;
+let score = 0;
+
+function initQuiz() {
+  currentQ = 0; score = 0;
+  document.getElementById('final-screen').classList.remove('visible');
+  document.getElementById('question-area').style.display = '';
+  document.getElementById('progress-text').style.display = '';
+  document.querySelector('.quiz-progress-bar').style.display = '';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (currentQ >= questions.length) { showFinal(); return; }
+  const q = questions[currentQ];
+  const area = document.getElementById('question-area');
+  const pct = (currentQ / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `Question ${currentQ + 1} / ${questions.length}`;
+
+  area.innerHTML = `
+    <div class="question-card">
+      <div>
+        <span class="question-tag ${q.tag} perandory">${q.tagLabel}</span>
+        <div class="question-number perandory">— Question ${currentQ + 1} —</div>
+      </div>
+      <p class="question-text perandory">${q.text}</p>
+      <div class="choices" id="choices"></div>
+      <p class="feedback-text perandory" id="feedback">${q.feedback}</p>
+      <button class="next-btn perandory" id="next-btn">${currentQ < questions.length - 1 ? 'Question suivante →' : 'Voir le résultat →'}</button>
+    </div>
+  `;
+
+  const choicesEl = document.getElementById('choices');
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn perandory';
+    btn.textContent = c;
+    btn.addEventListener('click', () => selectChoice(i));
+    choicesEl.appendChild(btn);
+  });
+
+  document.getElementById('next-btn').addEventListener('click', () => {
+    currentQ++;
+    renderQuestion();
+  });
+}
+
+function selectChoice(idx) {
+  const q = questions[currentQ];
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach(b => b.disabled = true);
+
+  if (idx === q.correct) {
+    btns[idx].classList.add('correct');
+    score++;
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.correct].classList.add('reveal');
+  }
+
+  document.getElementById('feedback').classList.add('visible');
+  document.getElementById('next-btn').classList.add('visible');
+}
+
+function showFinal() {
+  document.getElementById('question-area').style.display = 'none';
+  document.getElementById('progress-text').style.display = 'none';
+  document.querySelector('.quiz-progress-bar').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const pct = score / questions.length;
+  let title, epitaph;
+
+  if (pct >= 0.85) {
+    title = 'Seigneur Teinturier';
+    epitaph = `"Ici repose un esprit aux connaissances sans faille. Ni les ombres de l'Anneau Brisé, ni les dédales du Paradoxe ne surent l'égarer. Son nom sera gravé dans la trame même du Tissu Doré."`;
+  } else if (pct >= 0.57) {
+    title = 'Éclaireur des Limbes';
+    epitaph = `"Courageux dans l'adversité, ce voyageur a traversé plus d'une épreuve. Son chemin n'est pas terminé — les secrets du Paradoxe l'appellent encore depuis les ruines de la Cité Cramoisie."`;
+  } else {
+    title = 'Cendre Oubliée';
+    epitaph = `"Il s'est éteint comme une braise dans le vent. Mais les cendres nourrissent les flammes à venir. Reviens, ô Teinturier sans mémoire — l'Anneau et le Paradoxe ont encore tant à t'enseigner."`;
+  }
+
+  document.getElementById('final-title').textContent = title;
+  document.getElementById('final-score').textContent = `${score} / ${questions.length} — ${Math.round(pct*100)}% de réussite`;
+  document.getElementById('final-epitaph').textContent = epitaph;
+  document.getElementById('final-screen').classList.add('visible');
+
+  document.getElementById('btn-restart').addEventListener('click', initQuiz, { once: true });
+
+  // Chest interaction
+  const chestBtn = document.getElementById('chest-btn');
+  const chestReveal = document.getElementById('chest-reveal');
+  const chestSvg = document.getElementById('chest-svg');
+  chestBtn.addEventListener('click', () => {
+    if (chestReveal.classList.contains('visible')) return;
+    chestBtn.classList.add('opened');
+    chestSvg.innerHTML = `
+      <rect x="6" y="36" width="78" height="30" rx="2" fill="#1a1208" stroke="#c8a96e" stroke-width="1.2"/>
+      <rect x="6" y="2" width="78" height="28" rx="2" fill="#2a1e08" stroke="#e8c97e" stroke-width="1.4" transform="rotate(-28 45 36)"/>
+      <rect x="12" y="33" width="8" height="6" rx="1" fill="#0a0806" stroke="#8a6f3e" stroke-width="0.8"/>
+      <rect x="70" y="33" width="8" height="6" rx="1" fill="#0a0806" stroke="#8a6f3e" stroke-width="0.8"/>
+      <line x1="6" y1="51" x2="84" y2="51" stroke="#8a6f3e" stroke-width="0.5" opacity="0.5"/>
+      <circle cx="14" cy="44" r="2" fill="#8a6f3e"/>
+      <circle cx="76" cy="44" r="2" fill="#8a6f3e"/>
+      <circle cx="14" cy="58" r="2" fill="#8a6f3e"/>
+      <circle cx="76" cy="58" r="2" fill="#8a6f3e"/>
+      <ellipse cx="45" cy="40" rx="28" ry="10" fill="rgba(200,169,110,0.2)"/>
+    `;
+    setTimeout(() => chestReveal.classList.add('visible'), 250);
+  }, { once: true });
+}
+</script>
+</body>
+</html>
